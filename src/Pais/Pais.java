@@ -5,6 +5,8 @@
  */
 package Pais;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author César
@@ -44,5 +46,23 @@ public class Pais {
         this.ddd = ddd;
     }
     
+    public Boolean consultaPais(ArrayList<Pais> arrayPais, String pais){    
+        for(int i = 0; i< arrayPais.size();i++){
+            if(pais.equals(arrayPais.get(i).nome)){
+                return false;
+            }
+        }
+        return true;
+    }
     
+    public Boolean validaDDD(ArrayList<Pais> arrayPais, int ddd, String nome){
+        for(int i = 0; i< arrayPais.size();i++){
+            if(arrayPais.get(i).nome.equals(nome)){
+                if(arrayPais.get(i).ddd == ddd){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }

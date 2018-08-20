@@ -5,6 +5,8 @@
  */
 package Cliente;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author César
@@ -13,6 +15,7 @@ public class Cliente {
  String nome;
  String telefone;
  float limiteCredito;
+ int idade;
  String paisNome;
  String paisSigla;
 
@@ -63,6 +66,22 @@ public class Cliente {
     public void setPaisSigla(String paisSigla) {
         this.paisSigla = paisSigla;
     }
+
+    public int getIdade() {
+        return idade;
+    }
+
+    public void setIdade(int idade) {
+        this.idade = idade;
+    }
  
- 
+    public Boolean consultaNome(ArrayList<String> arrayNome, String nome){
+        
+        for(int i = 0; i< arrayNome.size();i++){
+            if(nome.equals(arrayNome.get(i))){
+                return false;
+            }
+        }
+        return true;
+    }
 }
