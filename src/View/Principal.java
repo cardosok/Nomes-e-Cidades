@@ -30,18 +30,29 @@ import javax.swing.ListModel;
  */
 public class Principal extends javax.swing.JFrame {
 
- 
+    List<Pais> listaPais = new ArrayList<>();
+    List<Cliente> listaNomes = new ArrayList<>();
 
     /**
      * Creates new form Principal
      */
     public Principal() {
         initComponents();
-      
+        botaoCancelaPais.doClick();// aparece escondido
+        btnCancelarNome.doClick();
+        //populaListas();
 
     }
 
-
+    void populaListas() {
+        //ComboBoxPais.removeAll();
+        DefaultComboBoxModel comboModel = new DefaultComboBoxModel();
+        for (Pais percorrer : listaPais) {
+            comboModel.addElement(percorrer.getNome());
+        }
+        ComboBoxPais.setModel(comboModel);
+        ComboBoxPais.addItem("Teste");
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -359,11 +370,40 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_btnNovoPaisActionPerformed
 
     private void bontaoSalvaPaisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bontaoSalvaPaisActionPerformed
-   
+        String campPais = campoNovoPais.getText();//getText pegar a informação que usuario digitou
+        String campSigla = campoSigla.getText();
+        int ddi = Integer.parseInt(cmpDDIPais.getText());
+
+        Pais pais = new Pais();
+        pais.setNome(campPais);
+        pais.setSigla(campSigla);
+        pais.setDdi(ddi);
+
+        boolean naoExiste = true;
+        for (int i = 0; i < listaPais.size(); i++) {
+            if (pais.getNome().toLowerCase().equals(listaPais.get(i).getNome().toLowerCase())) {
+                JOptionPane.showMessageDialog(null, "Pais já cadastrado");
+                naoExiste = false;
+            }
+        }
+        if (naoExiste) {
+            listaPais.add(pais);
+            jLPais.removeAll();
+            DefaultListModel listModel = new DefaultListModel();
+            for (Pais percorrer : listaPais) {
+                listModel.addElement(percorrer.getNome());
+            }
+            jLPais.setModel(listModel);
+            ComboBoxPais.addItem(campPais);
+            LimpaCamposPais();
+        } else {
+            botaoCancelaPais.doClick();
+        }
     }//GEN-LAST:event_bontaoSalvaPaisActionPerformed
 
     private void botaoCancelaPaisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoCancelaPaisActionPerformed
-     
+        LimpaCamposPais();
+        PainelNovoPais.setVisible(false);
     }//GEN-LAST:event_botaoCancelaPaisActionPerformed
 
     private void cmpNomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmpNomeActionPerformed
@@ -375,17 +415,48 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_campoNovoPaisActionPerformed
 
     private void btnCancelarNomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarNomeActionPerformed
-     
+        limparCampoNome();
+        PainelNovaPessoa.setVisible(false);
+
     }//GEN-LAST:event_btnCancelarNomeActionPerformed
 
     private void btnSalvarNomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarNomeActionPerformed
-    
+        Cliente cliente = new Cliente();
+
+        cliente.setNome(cmpNome.getText());
+        cliente.setTelefone(cmpDDINome.getText() + cmpTel.getText());
+        float limite = Float.parseFloat(cmpLimCred.getText());
+        cliente.setLimiteDeCredito(limite);
+        cliente.setIdade(Integer.parseInt(cmpIdade.getText()));
+
+        boolean naoExiste = true;
+        for (int i = 0; i < listaNomes.size(); i++) {
+            if (cliente.getNome().toLowerCase().equals(listaNomes.get(i).getNome().toLowerCase())) {
+                JOptionPane.showMessageDialog(null, "Nome já cadastrado");
+                naoExiste = false;
+            }
+        }
+        if (naoExiste) {
+            ValidarUsuario(cliente);
+            listaNomes.add(cliente);
+            JLnomes.removeAll(); // REMOVER TUDO QUE TEM NA LISTA
+            DefaultListModel listModel = new DefaultListModel();
+            for (Cliente percorrer : listaNomes) {
+                listModel.addElement(percorrer.getNome());
+            }
+            JLnomes.setModel(listModel);
+            limparCampoNome();
+        } else {
+            btnCancelarNome.doClick();
+        }
 
 
     }//GEN-LAST:event_btnSalvarNomeActionPerformed
 
     private void ComboBoxPaisItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_ComboBoxPaisItemStateChanged
-       
+        int i = ComboBoxPais.getSelectedIndex();
+        System.out.println("I: " + i + " lista: " + listaPais.get(i-1).getDdi());
+        cmpDDINome.setText("+" + listaPais.get(i-1).getDdi());
     }//GEN-LAST:event_ComboBoxPaisItemStateChanged
     void limparCampoNome() {
         cmpNome.setText("");
@@ -439,6 +510,9 @@ public class Principal extends javax.swing.JFrame {
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(Principal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
