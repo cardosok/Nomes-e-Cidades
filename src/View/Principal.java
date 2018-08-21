@@ -40,8 +40,6 @@ public class Principal extends javax.swing.JFrame {
         initComponents();
         botaoCancelaPais.doClick();// aparece escondido
         btnCancelarNome.doClick();
-        //populaListas();
-
     }
 
     void populaListas() {
@@ -211,6 +209,8 @@ public class Principal extends javax.swing.JFrame {
 
         cmpDDINome.setEnabled(false);
 
+        cmpLimCred.setEnabled(false);
+
         btnSalvarNome.setText("Salvar");
         btnSalvarNome.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -231,6 +231,11 @@ public class Principal extends javax.swing.JFrame {
         ComboBoxPais.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 ComboBoxPaisItemStateChanged(evt);
+            }
+        });
+        ComboBoxPais.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ComboBoxPaisActionPerformed(evt);
             }
         });
 
@@ -422,13 +427,21 @@ public class Principal extends javax.swing.JFrame {
 
     private void btnSalvarNomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarNomeActionPerformed
         Cliente cliente = new Cliente();
-
+        int k = ComboBoxPais.getSelectedIndex();
+        
         cliente.setNome(cmpNome.getText());
+        
         cliente.setTelefone(cmpDDINome.getText() + cmpTel.getText());
-        float limite = Float.parseFloat(cmpLimCred.getText());
+        
+        int idade =Integer.parseInt(cmpIdade.getText());
+        cliente.setIdade(idade);
+        
+        float limite = LimiteCredito(idade,listaPais.get(k-1).getNome());
         cliente.setLimiteDeCredito(limite);
-        cliente.setIdade(Integer.parseInt(cmpIdade.getText()));
-
+        
+        cliente.setPais(listaPais.get(k-1));
+        
+        
         boolean naoExiste = true;
         for (int i = 0; i < listaNomes.size(); i++) {
             if (cliente.getNome().toLowerCase().equals(listaNomes.get(i).getNome().toLowerCase())) {
@@ -454,10 +467,17 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSalvarNomeActionPerformed
 
     private void ComboBoxPaisItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_ComboBoxPaisItemStateChanged
-        int i = ComboBoxPais.getSelectedIndex();
+        
+    }//GEN-LAST:event_ComboBoxPaisItemStateChanged
+
+    private void ComboBoxPaisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ComboBoxPaisActionPerformed
+        // TODO add your handling code here:
+       int i = ComboBoxPais.getSelectedIndex();
+        int idade =Integer.parseInt(cmpIdade.getText());
         System.out.println("I: " + i + " lista: " + listaPais.get(i-1).getDdi());
         cmpDDINome.setText("+" + listaPais.get(i-1).getDdi());
-    }//GEN-LAST:event_ComboBoxPaisItemStateChanged
+        cmpLimCred.setText("R$"+ LimiteCredito(idade,listaPais.get(i-1).getNome())); 
+    }//GEN-LAST:event_ComboBoxPaisActionPerformed
     void limparCampoNome() {
         cmpNome.setText("");
         cmpIdade.setText("");
@@ -466,7 +486,22 @@ public class Principal extends javax.swing.JFrame {
         cmpTel.setText("");
        
     }
-
+    private float LimiteCredito(int idade, String pais){
+        float limite =0;
+        
+        if(idade <=18){
+            limite = 100;
+        }else if(idade > 18 && idade <= 35){
+            limite = 300;
+        }else if(idade > 35){
+            limite =500;
+        }
+        
+        if(pais.toLowerCase().equals("brasil")){
+            limite = limite + 100;
+        }
+        return limite;
+    }
     private void LimpaCamposPais() {
         campoNovoPais.setText("");
         campoSigla.setText("");
@@ -479,8 +514,8 @@ public class Principal extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Nome incorreto, digite um nome com mais de 5 caracteres");
         }
 
-        Cliente c = (Cliente) ComboBoxPais.getSelectedItem();
-        if (c.getPais().getNome().equals("") || c.getPais() == (null)) {
+        
+        if (cliente.getPais().getNome().equals("") || cliente.getPais() == (null)) {
             JOptionPane.showMessageDialog(null, "Nome Incorreto");
         }
     }

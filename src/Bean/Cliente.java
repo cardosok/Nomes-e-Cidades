@@ -64,8 +64,4 @@ public class Cliente {
         this.limiteDeCredito = limiteDeCredito;
     }
 
-   
-   
-    
-    
 }
